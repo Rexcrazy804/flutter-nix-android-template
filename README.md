@@ -56,5 +56,5 @@ If you'd prefer wireless debugging on your android device you may enable adb as 
 then pairing step would require the following comands
 ```sh
 adb pair <deviceIP>:<paring-port> <pairing code>
-adb pair <deviceIP>:<connection-port>
+adb connect <deviceIP>:<connection-port>
 ```
