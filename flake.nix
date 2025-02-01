@@ -11,7 +11,7 @@
       imports = [];
       systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
       perSystem = { config, self', inputs', pkgs, system, ... }: let 
-        androidSdk = (pkgs.androidenv.composeAndroidPackages {
+        sdkArgs = {
           toolsVersion = "26.1.1";
           platformToolsVersion = "35.0.2";
           buildToolsVersions = [
@@ -20,8 +20,6 @@
             "34.0.0"
           ];
           platformVersions = [
-            "31"
-            "33"
             "34"
             "35"
           ];
@@ -31,6 +29,8 @@
           includeSystemImages = true;
           systemImageTypes = [ "google_apis_playstore" ];
           includeSources = false;
+
+          # uncomment as required
           extraLicenses = [
             # "android-googletv-license"
             # "android-sdk-arm-dbt-license"
@@ -41,13 +41,10 @@
             # "intel-android-sysimage-license"
             # "mips-android-sysimage-license"
           ];
-        }).androidsdk;
-        androidEmu = pkgs.androidenv.emulateApp {
-          name = "emulate-MyAndroidApp";
-          platformVersion = "28";
-          abiVersion = "x86"; # armeabi-v7a, mips, x86_64
-          systemImageType = "google_apis_playstore";
         };
+        androidComposition = pkgs.androidenv.composeAndroidPackages sdkArgs;
+        androidSdk = androidComposition.androidsdk;
+        platformTools = androidComposition.platform-tools;
       in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
@@ -59,17 +56,32 @@
 
         packages.default = pkgs.hello;
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
+          packages = with pkgs; [
             flutter
             jdk17
-            aapt
-          ] ++ [androidSdk androidEmu];
+          ] ++ [
+            androidSdk 
+            platformTools
+          ];
 
+          CHROMIUM_EXECUTABLE = "${pkgs.chromium}/bin/chromium";
           ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
           GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/34.0.0/aapt2";
           ANDROID_HOME = "${androidSdk}/libexec/android-sdk";
         };
       };
-      flake = {};
+      flake = {
+        templates = rec {
+          flutter = {
+            path = ./.;
+            description = "A simple flutter template to sit up flutter androidSDK + chrome";
+            welcomeText = ''
+            # Welcome to nixos Flutter Template 
+            yipeeeeeee!!!!
+            '';
+          };
+          default = flutter;
+        };
+      };
     };
 }
