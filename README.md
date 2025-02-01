@@ -1,5 +1,5 @@
 # Introduction
-This is a simple nix flake template with that aims to provide a simple barebones
+This is a simple nix flake template that aims to provide a simple barebones
 working flutter template that comes with the androidSdk. Everything else I found 
 across github simply weren't minimal enough to my liking.
 
@@ -53,7 +53,7 @@ If you'd prefer wireless debugging on your android device you may enable adb as 
 }
 ```
 
-then pairing step would would require the following comands
+then pairing step would require the following comands
 ```sh
 adb pair <deviceIP>:<paring-port> <pairing code>
 adb pair <deviceIP>:<connection-port>
