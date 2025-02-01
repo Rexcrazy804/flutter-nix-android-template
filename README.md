@@ -1,16 +1,60 @@
-# template
+# Introduction
+This is a simple nix flake template with that aims to provide a simple barebones
+working flutter template that comes with the androidSdk. Everything else I found 
+across github simply weren't minimal enough to my liking.
 
-A new Flutter project.
+Feel free to contribute or raise issues that may arise when using this template.
+Have fun :D
 
-## Getting Started
+# Instructions
+The following will yeild a directory named my_new_project populated with the template
+```sh
+mkdir my_new_project
+cd my_new_project
+nix flake init -t github:Rexcrazy804/nix-android-template
+nix develop
+```
 
-This project is a starting point for a Flutter application.
+## Setting up Android Virtual Device
+Before we create the virtual device I recommend enabling kvm support by enabling the respective
+kvm kernelmodule for your specific CPU. with the following nix option
+```nix
+boot.kernelModules = ["kvm-intel"]; # "kvm-amd" for amd cpus
+```
 
-A few resources to get you started if this is your first Flutter project:
+Next add your user to the kvm group with like follows
+```nix
+users.users.rexies.extraGroups = [ "kvm"]; # replace rexies with your username
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Once that is done cd back into the directory you have just created for the
+flutter project and load the devShell using `nix develop` (I HIGHLY recommend
+looking into [nix-direnv](https://github.com/nix-community/nix-direnv)) and execute the 
+following commands
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+avdmanager create avd -n test -k "system-images;android-35;google_apis_playstore_ps16k;x86_64"
+# you may run the above command without the -k "...." part to get the list of available platforms
+
+flutter emulators --launch test
+flutter run -d sdk
+# don't forget flutter pub get if required
+```
+
+## Configuring adb
+If you'd prefer wireless debugging on your android device you may enable adb as follows
+```nix
+# configuration.nix
+{...}: {
+    # ...
+    programs.adb.enable = true;
+    users.users.rexies.extraGroups = [ "adbusers" ];
+    # ...
+}
+```
+
+then pairing step would would require the following comands
+```sh
+adb pair <deviceIP>:<paring-port> <pairing code>
+adb pair <deviceIP>:<connection-port>
+```
