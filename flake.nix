@@ -6,28 +6,30 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [];
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      perSystem = { config, self', inputs', pkgs, system, ... }: let 
+      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
+      perSystem = {
+        config,
+        self',
+        inputs',
+        pkgs,
+        system,
+        ...
+      }: let
         sdkArgs = {
           toolsVersion = "26.1.1";
           platformToolsVersion = "35.0.2";
-          buildToolsVersions = [
-            "30.0.3"
-            "33.0.1"
-            "34.0.0"
-          ];
-          platformVersions = [
-            "34"
-            "35"
-          ];
-          abiVersions = [ "x86_64" ];
+          buildToolsVersions = ["30.0.3" "33.0.1" "34.0.0"];
+          # in the event flutter complains about requireing additional
+          # platform versions, just add them here
+          platformVersions = ["34" "35"];
+          abiVersions = ["x86_64"];
           includeEmulator = true;
           emulatorVersion = "35.1.4";
           includeSystemImages = true;
-          systemImageTypes = [ "google_apis_playstore" ];
+          systemImageTypes = ["google_apis_playstore"];
           includeSources = false;
 
           # uncomment as required
@@ -42,6 +44,7 @@
             # "mips-android-sysimage-license"
           ];
         };
+
         androidComposition = pkgs.androidenv.composeAndroidPackages sdkArgs;
         androidSdk = androidComposition.androidsdk;
         platformTools = androidComposition.platform-tools;
@@ -54,15 +57,19 @@
           };
         };
 
+        formatter = pkgs.alejandra;
+
         packages.default = pkgs.hello;
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            flutter
-            jdk17
-          ] ++ [
-            androidSdk 
-            platformTools
-          ];
+          packages = with pkgs;
+            [
+              flutter
+              jdk17
+            ]
+            ++ [
+              androidSdk
+              platformTools
+            ];
 
           CHROMIUM_EXECUTABLE = "${pkgs.chromium}/bin/chromium";
           ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
@@ -70,14 +77,15 @@
           ANDROID_HOME = "${androidSdk}/libexec/android-sdk";
         };
       };
+
       flake = {
         templates = rec {
           flutter = {
             path = ./.;
             description = "A simple flutter template to sit up flutter androidSDK + chrome";
             welcomeText = ''
-            # Welcome to nixos Flutter Template 
-            yipeeeeeee!!!!
+              # Welcome to nixos Flutter Template
+              yipeeeeeee!!!!
             '';
           };
           default = flutter;
