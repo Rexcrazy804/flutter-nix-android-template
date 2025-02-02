@@ -65,6 +65,7 @@
             [
               flutter
               jdk17
+              chromium
             ]
             ++ [
               androidSdk
