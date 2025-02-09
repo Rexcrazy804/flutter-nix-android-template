@@ -43,13 +43,8 @@ flutter run -d sdk
 ## Configuring adb
 If you'd prefer wireless debugging on your android device you may enable adb as follows
 ```nix
-# configuration.nix
-{...}: {
-    # ...
-    programs.adb.enable = true;
-    users.users.rexies.extraGroups = [ "adbusers" ];
-    # ...
-}
+programs.adb.enable = true;
+users.users.rexies.extraGroups = [ "adbusers" ];
 ```
 
 then pairing step would require the following comands
