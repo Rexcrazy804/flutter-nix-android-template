@@ -72,7 +72,7 @@
               platformTools
             ];
 
-          CHROMIUM_EXECUTABLE = "${pkgs.chromium}/bin/chromium";
+          CHROME_EXECUTABLE = "${pkgs.chromium}/bin/chromium";
           ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
           GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/34.0.0/aapt2";
           ANDROID_HOME = "${androidSdk}/libexec/android-sdk";
