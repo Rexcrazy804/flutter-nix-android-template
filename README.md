@@ -9,9 +9,8 @@ Have fun :D
 # Instructions
 The following will yeild a directory named my_new_project populated with the template
 ```sh
-mkdir my_new_project
+nix flake new my_new_project -t github:Rexcrazy804/nix-android-template
 cd my_new_project
-nix flake init -t github:Rexcrazy804/nix-android-template
 nix develop
 ```
 
