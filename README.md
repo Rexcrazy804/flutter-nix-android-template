@@ -9,7 +9,7 @@ Have fun :D
 # Instructions
 The following will yeild a directory named my_new_project populated with the template
 ```sh
-nix flake new my_new_project -t github:Rexcrazy804/nix-android-template
+nix flake new my_new_project -t github:Rexcrazy804/flutter-nix-android-template
 cd my_new_project
 nix develop
 ```
